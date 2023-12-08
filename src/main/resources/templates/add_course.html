@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main>
+    <div th:insert="~{/header.html}"></div>
+    <section class="flatPurchase container">
+        <h3>Добавить курс</h3>
+        <form enctype="multipart/form-data" th:action="@{/course}" th:method="POST" th:object="${course}">
+            Название курса :<input required th:field="*{name}" type="text"/><br><br>
+            Описание курса :<input required th:field="*{description}" type="text"/><br><br>
+            Цена:<input required th:field="*{price}" type="number"/><br><br>
+            Иконка курса:<input name="file1"  required type="file" accept="image/png, image/jpeg"/><br><br>
+            Видео - материал курса:<input name="file2" required type="file" accept="video/mp4, video/quicktime"/><br><br>
+<!--            Старт курса:<input required th:field="*{startCourse}" type="date"/><br><br>-->
+<!--            Дата завершения курса:<input required th:field="*{closeCourse}" type="date"/><br><br>-->
+<!--            Третья фотография:<input name="file3" required type="file" accept="image/png, image/jpeg"/><br><br>-->
+<!--            Тип объявления:-->
+<!--            <select required th:field="*{type}">-->
+<!--                <option value="Продать">Продать</option>-->
+<!--                <option value="Сдать">Сдать</option>-->
+<!--            </select>-->
+            <input type="submit" value="Добавить курс"/>
+        </form>
+    </section>
+</main>
+</body>
+</html>
