@@ -64,12 +64,15 @@
 
 
 </div>
+<!--<div sec:authorize="isAuthenticated()">-->
+<!--    <p th:text="${course.status}"></p>-->
+<!--    <p th:text="${course.paymentStatus}"></p>-->
+<!--</div>-->
 <div sec:authorize="isAuthenticated()">
-    <p th:text="${course.status}"></p>
-    <p th:text="${course.paymentStatus}"></p>
+    <a th:href="@{/course/favourites(id=${course.id})}"> Записаться</a>
 </div>
 <div sec:authorize="isAuthenticated()">
-    <a th:href="@{/course/buy(id=${course.id})}"> Записаться</a>
+    <a th:href="@{/course/buy(id=${course.id})}"> Купить</a>
 </div>
 <div sec:authorize="hasAuthority('ADMIN')">
     <a th:href="@{/course/delete(id=${course.id})}"> Удалить</a>

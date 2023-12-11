@@ -3,6 +3,8 @@ package com.example.educationplatform.controller;
 import com.example.educationplatform.entity.Course;
 import com.example.educationplatform.entity.CourseFile;
 import com.example.educationplatform.entity.User;
+import com.example.educationplatform.entity.UserCourse;
+import com.example.educationplatform.repository.UserCourseRepository;
 import com.example.educationplatform.service.CourseService;
 import com.example.educationplatform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class EducationController {
     private final CourseService courseService;
     private final UserService userService;
+    private final UserCourseRepository userCourseRepository;
 
     //получение всех курсов
     @GetMapping("/index")
@@ -47,7 +50,7 @@ public class EducationController {
         return "ads";
     }
     @GetMapping("/course")
-    public String advertisementInfo(@RequestParam("id") Long id, Model model, Authentication authentication) {
+    public String courseInfo(@RequestParam("id") Long id, Model model, Authentication authentication) {
         Course course = courseService.getCourseById(id);
         User owner = userService.get(course.getUserId());
         if (authentication != null) {
@@ -81,36 +84,55 @@ public class EducationController {
         return "redirect:/index";
     }
 
-    //добавить в ихбранное, чтобы потом купить
+    //добавить в избранное, чтобы потом купить
     @GetMapping("course/favourites")
-    public String subscribeToCourse(@RequestParam("id") Long courseId, Authentication authentication) {
+    public String subscribeToCourse(/*@RequestParam("id") Long courseId*/ Model model, Authentication authentication)  {
         User user = (User) authentication.getPrincipal();
-//        userService.buyCourseById(user, id);
-        userService.subscribeToCourse(user, courseId);
-        return "redirect:/favourites";
+        List<Course> courses = userService.getMyFavorites(user);
+//        System.out.println(courses);
+//        model.addAttribute("courses", courses);
+        List<User> users = new ArrayList<>();
+        List<CourseFile> courseFiles = new ArrayList<>();
+        courses.forEach(course -> {
+            users.add(userService.get(course.getUserId()));
+            courseFiles.add(courseService.getAllImages(course.getId()).get(0));
+        });
+        users.addAll(courses.stream().map(r -> userService.get(r.getUserId())).collect(Collectors.toList()));
+        model.addAttribute("courses", courses);
+        model.addAttribute("users", users);
+        model.addAttribute("files", courseFiles);
+        return "favourites";
+
     }
     @GetMapping("course/myEducation")
     public String myEducation(Model model, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-//        userService.buyCourseById(user, id);
-//        userService.subscribeToCourse(user, courseId);
-//        return "redirect:/favourites";
-//        if (authentication != null) {
-////            User user = (User) authentication.getPrincipal();
-////            model.addAttribute("user", user);
-//        }
-        List<Course> courses = userService.getMyCourse(user);
 //        List<User> users = new ArrayList<>();
+//        List<Course> courses = userService.getMyCourse(user);
+//        List<CourseFile> courseFiles = new ArrayList<>();
+//        courses.forEach(course -> {
+////            users.add(userService.get(course.getUserId()));
+//            courseFiles.add(courseService.getAllImages(course.getId()).get(0));
+//        });
+////        users.addAll(courses.stream().map(r -> userService.get(r.getUserId())).collect(Collectors.toList()));
+//        model.addAttribute("courses", courses);
+////        model.addAttribute("users", users);
+//        model.addAttribute("files", courseFiles);
+        List<Course> courses = userService.getMyCourse(user);
+        List<User> users = new ArrayList<>();
         List<CourseFile> courseFiles = new ArrayList<>();
         courses.forEach(course -> {
-//            users.add(userService.get(course.getUserId()));
+            users.add(userService.get(course.getUserId()));
             courseFiles.add(courseService.getAllImages(course.getId()).get(0));
         });
-//        users.addAll(courses.stream().map(r -> userService.get(r.getUserId())).collect(Collectors.toList()));
+        users.addAll(courses.stream().map(r -> userService.get(r.getUserId())).collect(Collectors.toList()));
         model.addAttribute("courses", courses);
-//        model.addAttribute("users", users);
+        model.addAttribute("users", users);
         model.addAttribute("files", courseFiles);
-        return "myEducation";
+
+
+//        return "redirect:course_info";
+        return "my_education";
     }
 
     //покупка курса
