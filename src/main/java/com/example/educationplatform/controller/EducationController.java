@@ -86,11 +86,10 @@ public class EducationController {
 
     //добавить в избранное, чтобы потом купить
     @GetMapping("course/favourites")
-    public String subscribeToCourse(/*@RequestParam("id") Long courseId*/ Model model, Authentication authentication)  {
+    public String getMyFavourites(/*@RequestParam("id") Long courseId*/ Model model, Authentication authentication)  {
         User user = (User) authentication.getPrincipal();
+        model.addAttribute("user", user);
         List<Course> courses = userService.getMyFavorites(user);
-//        System.out.println(courses);
-//        model.addAttribute("courses", courses);
         List<User> users = new ArrayList<>();
         List<CourseFile> courseFiles = new ArrayList<>();
         courses.forEach(course -> {
@@ -104,20 +103,17 @@ public class EducationController {
         return "favourites";
 
     }
-    @GetMapping("course/myEducation")
-    public String myEducation(Model model, Authentication authentication) {
+    @GetMapping("/course/subscribeToCourse")
+    public String subscribeToCourse(@RequestParam("id") Long courseId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-//        List<User> users = new ArrayList<>();
-//        List<Course> courses = userService.getMyCourse(user);
-//        List<CourseFile> courseFiles = new ArrayList<>();
-//        courses.forEach(course -> {
-////            users.add(userService.get(course.getUserId()));
-//            courseFiles.add(courseService.getAllImages(course.getId()).get(0));
-//        });
-////        users.addAll(courses.stream().map(r -> userService.get(r.getUserId())).collect(Collectors.toList()));
-//        model.addAttribute("courses", courses);
-////        model.addAttribute("users", users);
-//        model.addAttribute("files", courseFiles);
+        userService.subscribeToCourse(user, courseId);
+//        return "favourites";
+        return "redirect:/course/favourites";
+    }
+    @GetMapping("course/myEducation")
+    public String getMyEducation(Model model, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("user", user);
         List<Course> courses = userService.getMyCourse(user);
         List<User> users = new ArrayList<>();
         List<CourseFile> courseFiles = new ArrayList<>();
@@ -129,9 +125,6 @@ public class EducationController {
         model.addAttribute("courses", courses);
         model.addAttribute("users", users);
         model.addAttribute("files", courseFiles);
-
-
-//        return "redirect:course_info";
         return "my_education";
     }
 
@@ -140,8 +133,9 @@ public class EducationController {
     public String buyCourse(@RequestParam("id") Long courseId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         userService.buyCourseById(user, courseId);
-        return "redirect:/my_education";
+        return "redirect:/course/myEducation";
     }
+
 
     // удаление курса
     @GetMapping("/course/delete")

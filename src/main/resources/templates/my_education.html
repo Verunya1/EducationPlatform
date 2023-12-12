@@ -3,101 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+
+<!--    &lt;!&ndash; Bootstrap CSS &ndash;&gt;-->
+<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"-->
+<!--          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"-->
+<!--          crossorigin="anonymous">-->
 </head>
 <body>
-<!--<div th:insert="~{/header.html}"></div>-->
+<div th:insert="~{/header.html}"></div>
+<div class="card-deck">
+    <ul th:each="c, n : ${courses}">
 
-<!--<div class="card-deck">-->
-<!--    <ul th:each="c, n : ${courses}">-->
-
-<!--        <div class="card" style="width: 18rem;">-->
-<!--            <img class="card-img-top" th:src="${files[n.index].path}">-->
-<!--            <div class="card-body">-->
-<!--                <h5 class="card-title" th:text="${c.price}"></h5>-->
-<!--                <p class="card-text" th:text="${c.name}"></p>-->
-<!--                &lt;!&ndash;                <h5 class="card-title" th:text="${c.price}"></h5>&ndash;&gt;-->
-<!--                &lt;!&ndash;                <p class="card-text" th:text="${c.type}"></p>&ndash;&gt;-->
-<!--&lt;!&ndash;                <p class="card-text" th:text="${users[n.index].username}"></p>&ndash;&gt;-->
-<!--                &lt;!&ndash;            <img th:src="${images[n.index].path}" width="25%">&ndash;&gt;-->
-<!--                <a th:href="@{/course(id=${c.id})}" class="btn btn-primary">Подробнее</a>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </ul>-->
-<!--</div>-->
-<!--<body>-->
-<!--<h1>User Courses</h1>-->
-<!--<ul>-->
-<!--    <li th:each="course : ${courses}">-->
-<!--        &lt;!&ndash; Display course details &ndash;&gt;-->
-<!--        <span th:text="${course.name}"></span>-->
-<!--        &lt;!&ndash; Add more properties as needed &ndash;&gt;-->
-<!--    </li>-->
-<!--</ul>-->
-<!--</body>-->
-<!--<body>-->
-<!--<h1>User Courses</h1>-->
-
-<!--&lt;!&ndash; Displaying user information &ndash;&gt;-->
-<!--<p>Welcome, <span th:text="${user.username}"></span>!</p>-->
-
-<!--&lt;!&ndash; Display course information &ndash;&gt;-->
-<!--<div th:each="course : ${courses}">-->
-<!--    <h2 th:text="${course.get(1).getTitle()}"></h2>-->
-<!--    &lt;!&ndash; Display course details &ndash;&gt;-->
-<!--    <p>Course Description: <span th:text="${course.get(1).getDescription()}"></span></p>-->
-
-<!--    &lt;!&ndash; Display course files/images &ndash;&gt;-->
-<!--    <div th:each="file : ${courseFiles}">-->
-<!--        <img th:if="${file.courseId} == ${course.get(1).getId()}" th:src="${file.imageUrl}" alt="Course Image"/>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; Add your JavaScript scripts here &ndash;&gt;-->
-<!--</body>-->
-
-<!--<h1>My Courses</h1>-->
-<!--<div th:each="courseList : ${courses}">-->
-<!--    <div th:each="course : ${courseList}">-->
-<!--        <div>-->
-<!--            <h2 th:text="${course.title}"></h2>-->
-<!--            <img th:src="${courseService.getFirstImage(course.id)}" alt="Course Image" width="200" height="150">-->
-<!--            <p th:text="${course.description}"></p>-->
-<!--            <p th:text="${course.price}"></p>-->
-<!--            <form th:action="@{/courses/buy/{id}(id=${course.id})}" method="post">-->
-<!--                <input type="submit" value="Buy">-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<div th:each="courseList : ${courses}">
-    <div th:each="course : ${courseList}">
-        <div>
-            <h2 th:text="${course.name}"></h2>
-            <!--            <img class="card-img-top" th:src="${files[n.index].path}">-->
-            <!--            <img th:src="${courseService.getFirstImage(course.id)}" alt="Course Image" width="200" height="150">-->
-            <p th:text="${course.description}"></p>
-            <p th:text="${course.price}"></p>
-<!--            <form th:action="@{/course/{id}(id=${course.id})}" method="get">-->
-<!--                <input type="submit" value="Обучение">-->
-<!--            </form>-->
-            <a th:href="@{/course(id=${course.id})}" class="btn btn-primary">Обучение</a>
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" th:src="${files[n.index].path}">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${c.price}"></h5>
+                <p class="card-text" th:text="${c.name}"></p>
+                <!--                <h5 class="card-title" th:text="${c.price}"></h5>-->
+                <!--                <p class="card-text" th:text="${c.type}"></p>-->
+                <p class="card-text" th:text="${users[n.index].username}"></p>
+                <!--            <img th:src="${images[n.index].path}" width="25%">-->
+                <a th:href="@{/course(id=${c.id})}" class="btn btn-primary">Обучение</a>
+            </div>
         </div>
-    </div>
+    </ul>
 </div>
-<!--<div th:each="courseList : ${courses}">-->
-<!--    <div th:each="course : ${courseList}">-->
-<!--        <div>-->
-<!--            <h2 th:text="${course.name}"></h2>-->
-<!--            &lt;!&ndash;            <img class="card-img-top" th:src="${files[n.index].path}">&ndash;&gt;-->
-<!--            &lt;!&ndash;            <img th:src="${courseService.getFirstImage(course.id)}" alt="Course Image" width="200" height="150">&ndash;&gt;-->
-<!--            <p th:text="${course.description}"></p>-->
-<!--            <p th:text="${course.price}"></p>-->
-<!--&lt;!&ndash;            <form th:action="@{/courses/buy/{id}(id=${course.id})}" method="post">&ndash;&gt;-->
-<!--&lt;!&ndash;                <input type="submit" value="Buy">&ndash;&gt;-->
-<!--&lt;!&ndash;            </form>&ndash;&gt;-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
 </body>
 </html>

@@ -69,7 +69,8 @@
 <!--    <p th:text="${course.paymentStatus}"></p>-->
 <!--</div>-->
 <div sec:authorize="isAuthenticated()">
-    <a th:href="@{/course/favourites(id=${course.id})}"> Записаться</a>
+<!--    <a th:href="@{/course/favourites(id=${course.id})}"> Записаться</a>-->
+    <a th:href="@{/course/subscribeToCourse(id=${course.id})}"> Записаться</a>
 </div>
 <div sec:authorize="isAuthenticated()">
     <a th:href="@{/course/buy(id=${course.id})}"> Купить</a>

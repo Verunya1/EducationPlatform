@@ -68,16 +68,37 @@ public class UserService {
     }
 
     public void subscribeToCourse(/*Long userId,*/ User user, Long courseId) {
-//        User user = userRepository.findById(userId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
-//        UserCourse userCourse = userCourseRepository.findById(courseId).orElseThrow();
-//        course.setPaymentStatus("ждет оплаты");
-//        course.set("ждет оплаты");
-        //TODO сделать проверку на статус и статус оплаты, запретить это делать, мб удалить из списка курсы для записи, добавить эти курсы в избранное и мое обучение
-        UserCourse userCourse = UserCourse.builder().user(user).course(course).status("пройти").paymentStatus("ждет оплаты").build();
-        System.out.println(userCourse);
-        userCourseRepository.save(userCourse);
+
+        List<UserCourse> userCourses = userCourseRepository.getAllByUserId(user.getId());
+        System.out.println(userCourses);
+        UserCourse userCheck = new UserCourse();
+        for (UserCourse userCours : userCourses) {
+            if (userCours.getCourse().getId().equals(courseId)) {
+                userCheck = userCours;
+            }
+            else{
+                userCheck.setPaymentStatus("первое добавление");
+            }
+        }
+        System.out.println(userCheck);
+        if(userCourses.isEmpty()){
+            UserCourse userCourse = UserCourse.builder().user(user).course(course).status("пройти").paymentStatus("ждет оплаты").build();
+            System.out.println(userCourse);
+            userCourseRepository.save(userCourse);
+        }
+        else if (userCheck.getPaymentStatus().equals("первое добавление")){
+            //TODO сделать проверку на статус и статус оплаты, запретить это делать, мб удалить из списка курсы для записи, добавить эти курсы в избранное и мое обучение
+            UserCourse userCourse = UserCourse.builder().user(user).course(course).status("пройти").paymentStatus("ждет оплаты").build();
+            System.out.println(userCourse);
+            userCourseRepository.save(userCourse);
+        }
+        else if (userCheck.getCourse().getId().equals(courseId) && userCheck.getPaymentStatus().equals("ждет оплаты")) {
+            System.out.println("Вы уже записались на курс");
+        }
+
     }
+
 
     public void buyCourseById(User user, Long courseId) {
         Course course = courseService.getCourseById(courseId);
@@ -90,6 +111,7 @@ public class UserService {
 
         owner.setMoney(owner.getMoney() + course.getPrice());
 
+
         UserCourse userCourse = new UserCourse();
         userCourse.setUser(user);
         userCourse.setCourse(course);
@@ -97,6 +119,49 @@ public class UserService {
         userCourse.setStatus("мое обучение");
         System.out.println(userCourse);
         userCourseRepository.save(userCourse);
+
+//        List<UserCourse> userCourses = userCourseRepository.getAllByUserId(user.getId());
+//        UserCourse userCheck = new UserCourse();
+//        for (UserCourse userCours : userCourses) {
+//            if (userCours.getCourse().getId().equals(courseId)) {
+//                userCheck = userCours;
+//            }
+//            else{
+//                userCheck.setPaymentStatus("первое добавление");
+//            }
+//        }
+//        System.out.println(userCheck);
+//        if(userCourses.isEmpty()){
+//            if (user.getMoney() < course.getPrice()) {
+//                return;
+//            }
+//            user.setMoney(user.getMoney() - course.getPrice());
+//
+//            User owner = get(course.getUserId());
+//
+//            owner.setMoney(owner.getMoney() + course.getPrice());
+//
+//            UserCourse userCourse = UserCourse.builder().user(user).course(course).status("оплачен").paymentStatus("мое обучение").build();
+//            System.out.println(userCourse);
+//            userCourseRepository.save(userCourse);
+//        }
+//        else if (userCheck.getPaymentStatus().equals("первое добавление")){
+//            if (user.getMoney() < course.getPrice()) {
+//                return;
+//            }
+//            user.setMoney(user.getMoney() - course.getPrice());
+//
+//            User owner = get(course.getUserId());
+//
+//            owner.setMoney(owner.getMoney() + course.getPrice());
+//            //TODO сделать проверку на статус и статус оплаты, запретить это делать, мб удалить из списка курсы для записи, добавить эти курсы в избранное и мое обучение
+//            UserCourse userCourse = UserCourse.builder().user(user).course(course).status("оплачен").paymentStatus("мое обучение").build();
+//            System.out.println(userCourse);
+//            userCourseRepository.save(userCourse);
+//        }
+//        else if (userCheck.getCourse().getId().equals(courseId) && userCheck.getPaymentStatus().equals("оплачен")) {
+//            System.out.println("Вы уже купили курс");
+//        }
 
     }
 
@@ -120,6 +185,7 @@ public class UserService {
 //                .map(userCourse -> courseRepository.getCourseById(userCourse.getUser().getId()))
 //                .collect(Collectors.toList());
     }
+
     public List<Course> getMyCourse(User user) {
         List<UserCourse> courses = userCourseRepository.getAllByUserId(user.getId());
 //        UserCourse course = userCourseRepository.findById(23L).orElseThrow();

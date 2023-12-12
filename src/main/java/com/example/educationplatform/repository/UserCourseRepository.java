@@ -17,6 +17,7 @@ public interface UserCourseRepository extends JpaRepository<UserCourse,Long> {
     List<UserCourse> getAllByUserId(Long userId);
 
     UserCourse findByUserId(Long user);
+    UserCourse findByCourseId(Long courseId);
 
     List<UserCourse> getAllByCourseId(Long userId);
 //    List<Course> getAllByUserCourseId(Long userId);

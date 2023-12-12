@@ -10,7 +10,6 @@
 
 <div class="card-deck">
     <ul th:each="c, n : ${courses}">
-
         <div class="card" style="width: 18rem;">
             <img class="card-img-top" th:src="${files[n.index].path}">
             <div class="card-body">
