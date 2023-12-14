@@ -10,16 +10,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserCourseRepository extends JpaRepository<UserCourse,Long> {
-//    List<UserCourse> getAllByUserId(Long courseId);
+
+    List<UserCourse> getAllByUserId(Long userId);
+
+    Optional<UserCourse> findByUserIdAndCourseId(Long userId, Long courseId);
+
+    //    List<UserCourse> getAllByUserId(Long courseId);
 //
 //    UserCourse getCourseById(Long courseId);
 //
-    List<UserCourse> getAllByUserId(Long userId);
-
-    UserCourse findByUserId(Long user);
-    UserCourse findByCourseId(Long courseId);
-
-    List<UserCourse> getAllByCourseId(Long userId);
+//    UserCourse findByUserId(Long user);
+//    UserCourse findByCourseId(Long courseId);
+//
+//    List<UserCourse> getAllByCourseId(Long userId);
 //    List<Course> getAllByUserCourseId(Long userId);
 ////    List<UserCourse> getAllByCourseId(Long userId);
 }

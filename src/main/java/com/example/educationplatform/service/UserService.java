@@ -20,8 +20,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
@@ -73,27 +76,27 @@ public class UserService {
         List<UserCourse> userCourses = userCourseRepository.getAllByUserId(user.getId());
         System.out.println(userCourses);
         UserCourse userCheck = new UserCourse();
-        for (UserCourse userCours : userCourses) {
-            if (userCours.getCourse().getId().equals(courseId)) {
-                userCheck = userCours;
+        for (UserCourse userCourse : userCourses) {
+            if (userCourse.getCourse().getId().equals(courseId)) {
+                userCheck = userCourse;
+
             }
-            else{
-                userCheck.setPaymentStatus("первое добавление");
-            }
+
         }
         System.out.println(userCheck);
         if(userCourses.isEmpty()){
+            // TODO: переписать на enum'ы
             UserCourse userCourse = UserCourse.builder().user(user).course(course).status("пройти").paymentStatus("ждет оплаты").build();
             System.out.println(userCourse);
             userCourseRepository.save(userCourse);
         }
-        else if (userCheck.getPaymentStatus().equals("первое добавление")){
+        else if (isNull(userCheck.getPaymentStatus())){
             //TODO сделать проверку на статус и статус оплаты, запретить это делать, мб удалить из списка курсы для записи, добавить эти курсы в избранное и мое обучение
             UserCourse userCourse = UserCourse.builder().user(user).course(course).status("пройти").paymentStatus("ждет оплаты").build();
             System.out.println(userCourse);
             userCourseRepository.save(userCourse);
         }
-        else if (userCheck.getCourse().getId().equals(courseId) && userCheck.getPaymentStatus().equals("ждет оплаты")) {
+        else if (userCheck.getCourse().getId().equals(courseId) && userCheck.getPaymentStatus().equals("ждет оплаты")) {// TODO переписать на логирование
             System.out.println("Вы уже записались на курс");
         }
 
@@ -105,20 +108,38 @@ public class UserService {
         if (user.getMoney() < course.getPrice()) {
             return;
         }
+
         user.setMoney(user.getMoney() - course.getPrice());
 
         User owner = get(course.getUserId());
 
         owner.setMoney(owner.getMoney() + course.getPrice());
 
+        Optional<UserCourse> optionalUserCourse = userCourseRepository.findByUserIdAndCourseId(user.getId(), courseId);
 
-        UserCourse userCourse = new UserCourse();
-        userCourse.setUser(user);
-        userCourse.setCourse(course);
-        userCourse.setPaymentStatus("оплачен");
-        userCourse.setStatus("мое обучение");
-        System.out.println(userCourse);
-        userCourseRepository.save(userCourse);
+        if (optionalUserCourse.isPresent()) {
+            UserCourse foundUserCourse = optionalUserCourse.get();
+            if (foundUserCourse.getPaymentStatus().equals("ждет оплаты")) {
+                foundUserCourse.setPaymentStatus("оплачен");
+                foundUserCourse.setStatus("мое обучение");
+                userCourseRepository.save(foundUserCourse);
+            }
+            else {
+                System.out.println("Вы уже оплатили курс");
+            }
+        } else {
+            UserCourse userCourse = UserCourse.builder().user(user).course(course).status("мое обучение").paymentStatus("оплачен").build();
+            userCourseRepository.save(userCourse);
+        }
+
+
+//        UserCourse userCourse = new UserCourse();
+//        userCourse.setUser(user);
+//        userCourse.setCourse(course);
+//        userCourse.setPaymentStatus("оплачен");
+//        userCourse.setStatus("мое обучение");
+//        System.out.println(userCourse);
+//        userCourseRepository.save(userCourse);
 
 //        List<UserCourse> userCourses = userCourseRepository.getAllByUserId(user.getId());
 //        UserCourse userCheck = new UserCourse();
